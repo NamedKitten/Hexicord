@@ -19,8 +19,7 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include <hexicord/event_dispatcher.hpp>
-#include <iostream>
+#include "hexicord/event_dispatcher.hpp"
 
 namespace Hexicord {
     void EventDispatcher::addHandler(Event eventType, EventDispatcher::EventHandler handler) {

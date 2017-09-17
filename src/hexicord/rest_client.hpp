@@ -22,16 +22,21 @@
 #ifndef HEXICORD_REST_CLIENT_HPP
 #define HEXICORD_REST_CLIENT_HPP
 
-#include <utility>
-#include <boost/asio/io_service.hpp>
-#include <boost/optional.hpp>
-#include <hexicord/permission.hpp>
-#include <hexicord/json.hpp>
-#include <hexicord/internal/rest.hpp>
-#include <hexicord/config.hpp>
-#include <hexicord/types.hpp>
+#include <cstdint>                      // uint8_t
+#include <utility>                      // std::pair
+#include <string>                       // std::string
+#include <vector>                       // std::vector
+#include <unordered_map>                // std::unordered_map
+#include <memory>                       // std::shared_ptr
+#include <boost/optional.hpp>           // boost::optional
+#include "hexicord/json.hpp"            // nlohamnn::json
+#include "hexicord/permission.hpp"      // Hexicord::Permissions
+#include "hexicord/config.hpp"          // HEXICORD_RATELIMIT_PREDICTION
+#include "hexicord/types.hpp"           // Hexicord::Snowflake, Hexicord::File, Hexicord::Image
+namespace boost { namespace asio { class io_service; }}
+namespace Hexicord { namespace REST { class HTTPSConnection; class MultipartEntity; class HTTPRequest; class HTTPResponse; }}
 #ifdef HEXICORD_RATELIMIT_PREDICTION
-    #include <hexicord/ratelimit_lock.hpp>
+    #include "hexicord/ratelimit_lock.hpp"
 #endif
 
 namespace Hexicord {
@@ -966,7 +971,9 @@ private:
 
         static inline REST::MultipartEntity fileToMultipartEntity(const File& file);
 
-        std::unique_ptr<REST::HTTPSConnection> restConnection;
+        // We have to use std::shared_ptr instead of std::unique_ptr because
+        // latter requires complete type but we forward-declare REST::HTTPSConnection.
+        std::shared_ptr<REST::HTTPSConnection> restConnection;
         boost::asio::io_service& ioService; // non-owning reference to I/O service.
     };
 }

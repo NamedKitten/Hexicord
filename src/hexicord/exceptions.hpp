@@ -3,7 +3,6 @@
 
 #include <stdexcept>
 #include <string>
-#include <boost/system/system_error.hpp>
 
 /**
  * \file exceptions.hpp
@@ -12,8 +11,6 @@
  */
 
 namespace Hexicord {
-    using ConnectionError = boost::system::system_error;
-
     /// Base class for errors that can't be predicted in most cases.
     class RuntimeError : public std::runtime_error {
     public:

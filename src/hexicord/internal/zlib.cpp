@@ -19,13 +19,13 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "zlib.hpp"
+#include "hexicord/internal/zlib.hpp"
 #ifdef HEXICORD_ZLIB
 
-#include <cstring>
-#include <cassert>
-#include <string>
-#include <zlib.h>
+#include <cstring> // memcpy, size_t
+#include <cassert> // assert
+#include <string>  // std::string
+#include <zlib.h>  // z_stream inflate inflateEnd
 
 // Closer to trivial message size => better.
 constexpr size_t ZlibBufferSize = 16 * 1024;
@@ -38,11 +38,11 @@ namespace Zlib {
         uint8_t in[ZlibBufferSize], out[ZlibBufferSize];
           
         int status;
-        stream.zalloc = Z_NULL;
-        stream.zfree = Z_NULL;
-        stream.opaque = Z_NULL;
+        stream.zalloc = nullptr;
+        stream.zfree = nullptr;
+        stream.opaque = nullptr;
         stream.avail_in = 0;
-        stream.next_in = Z_NULL;
+        stream.next_in = nullptr;
         status = inflateInit2(&stream, /* window bits: */ 15);
         assert(status == Z_OK);
 

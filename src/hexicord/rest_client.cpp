@@ -19,14 +19,15 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include <hexicord/rest_client.hpp>
+#include "hexicord/rest_client.hpp"
+
 #include <thread>                                     // std::this_thread::sleep_for
 #include <chrono>                                     // std::chrono::seconds, std::chrono::milliseconds
-#include <fstream>                                    // std::ifstream
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/asio/io_service.hpp>                  // boost::asio::io_service
 #include <boost/beast/http/error.hpp>                 // boost::beast::http::error::end_of_stream
-#include <hexicord/exceptions.hpp>
-#include <hexicord/internal/utils.hpp>                // Utils::getRatelimitDomain, Utils::domainFromUrl
+#include "hexicord/exceptions.hpp"
+#include "hexicord/internal/utils.hpp"                // Utils::getRatelimitDomain, Utils::domainFromUrl
+#include "hexicord/internal/rest.hpp"                 // Hexicord::REST
 
 #if defined(HEXICORD_DEBUG_LOG)
     #include <iostream>

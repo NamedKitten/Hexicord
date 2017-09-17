@@ -22,10 +22,10 @@
 #ifndef HEXICORD_UTILS_HPP
 #define HEXICORD_UTILS_HPP
 
-#include <vector>
-#include <string>
-#include <istream>
-#include <unordered_map>
+#include <cstdint>        // uint8_t
+#include <vector>         // std::vector
+#include <string>         // std::string
+#include <unordered_map>  // std::unordered_map
 
 /**
  *  Reusable code snippets.

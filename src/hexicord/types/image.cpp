@@ -1,9 +1,9 @@
-#include <hexicord/types/image.hpp>
+#include "hexicord/types/image.hpp"
 
 #include <boost/asio/io_service.hpp>   // boost::asio::io_service
-#include <hexicord/internal/utils.hpp> // Utils::Magic, Utils::base64Encode
-#include <hexicord/exceptions.hpp>     // LogicError
-#include <hexicord/internal/rest.hpp>  // REST::HTTPSConnection
+#include "hexicord/internal/utils.hpp" // Hexicord::Utils::Magic, Hexicord::Utils::base64Encode
+#include "hexicord/exceptions.hpp"     // Hexicord::LogicError
+#include "hexicord/internal/rest.hpp"  // Hexicord::REST
 
 namespace Hexicord {
 

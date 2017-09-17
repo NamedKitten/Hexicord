@@ -22,13 +22,16 @@
 #ifndef HEXICORD_GATEWAY_CLIENT_HPP
 #define HEXICORD_GATEWAY_CLIENT_HPP
 
-#include <string>
-#include <vector>
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/steady_timer.hpp>
-#include <hexicord/json.hpp>
-#include <hexicord/event_dispatcher.hpp>
-#include <hexicord/internal/wss.hpp>
+#include <cstdint>                       // uint8_t
+#include <memory>                        // std::unique_ptr
+#include <stdexcept>                     // std::runtime_error
+#include <string>                        // std::string
+#include <vector>                        // std::vector
+#include <boost/asio/steady_timer.hpp>   // boost::asio::steady_timer
+#include <hexicord/event_dispatcher.hpp> // Hexicord::Event, Hexicord::EventDispatcher
+#include <hexicord/json.hpp>             // nlohmann::json
+namespace Hexicord { class TLSWebSocket; }
+namespace boost { namespace asio { class io_service; } }
 
 namespace Hexicord {
     /**

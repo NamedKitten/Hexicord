@@ -1,14 +1,16 @@
 #ifndef HEXICORD_REST_HPP
-#define HEXICORD_REST_HPP 
+#define HEXICORD_REST_HPP
 
-#include <string>                     // std::string
-#include <vector>                     // std::vector
-#include <unordered_map>              // std::unordered_map
-#include <boost/asio/ssl/stream.hpp>  // boost::asio::ssl::stream
-#include <boost/asio/ssl/context.hpp> // boost::asio::ssl::context
-#include <boost/asio/ip/tcp.hpp>      // boost::asio::ip::tcp::socket
+#include <cstdint>        // uint8_t
+#include <string>         // std::string
+#include <vector>         // std::vector
+#include <unordered_map>  // std::unordered_map
+#include <memory>         // std::shared_ptr
+namespace boost { namespace asio { class io_service; }}
 
 namespace Hexicord { namespace REST {
+    struct HTTPSConnectionInternal;
+
     namespace _detail {
         std::string stringToLower(const std::string& input);
 
@@ -53,10 +55,8 @@ namespace Hexicord { namespace REST {
         const std::string serverName;
 
     private:
-        boost::asio::ssl::context tlsctx;
-        boost::asio::ssl::stream<boost::asio::ip::tcp::socket> stream;
+        std::shared_ptr<HTTPSConnectionInternal> connection;
 
-        boost::asio::ip::tcp::resolver::iterator resolutionResult;
         bool alive = false;
     };
 

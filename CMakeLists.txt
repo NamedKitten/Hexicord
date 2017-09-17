@@ -225,13 +225,15 @@ target_include_directories(hexicord PUBLIC
                            ${PROJECT_BINARY_DIR})
 target_compile_options(hexicord PRIVATE ${WARNING_FLAGS})
 
-# NOT SUPPORTED until we remove references to beast from headers.
-#install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/hexicord
-#        DESTINATION include
-#        FILES_MATCHING PATTERN "*.hpp")
-#install(TARGETS hexicord
-#        ARCHIVE DESTINATION lib
-#        LIBRARY DESTINATION lib)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/hexicord
+        DESTINATION include
+        FILES_MATCHING
+         PATTERN "*.hpp"
+         PATTERN "internal" EXCLUDE)
+install(TARGETS hexicord
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib)
+
 
 option(HEXICORD_EXAMPLES "Build examples." OFF)
 

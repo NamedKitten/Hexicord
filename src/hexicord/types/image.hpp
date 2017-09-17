@@ -1,12 +1,12 @@
 #ifndef HEXICORD_TYPES_IMAGE_HPP
 #define HEXICORD_TYPES_IMAGE_HPP
 
+#include <cstdint>
 #include <vector>
 #include <string>
-#include <hexicord/exceptions.hpp>
-#include <hexicord/types/snowflake.hpp>
-#include <hexicord/types/file.hpp>
-
+#include "hexicord/exceptions.hpp"
+#include "hexicord/types/snowflake.hpp"
+#include "hexicord/types/file.hpp"
 namespace boost { namespace asio { class io_service; }}
 
 namespace Hexicord {

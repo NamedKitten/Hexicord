@@ -19,14 +19,16 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "utils.hpp"
-#include <iterator>     // std::back_inserter
-#include <algorithm>    // std::copy
+#include "hexicord/internal/utils.hpp"
+
 #include <cctype>       // std::isalnum
-#include <stdexcept>    // std::invalid_argument
+#include <ctime>        // std::time
+#include <cstdlib>      // std::rand, std::srand, size_t
 #include <cassert>      // assert
+#include <stdexcept>    // std::invalid_argument
 #include <sstream>      // std::ostringstream
 #include <iomanip>      // std::setw
+#include <stdexcept>    // std::invalid_argument
 #include <cstdlib>      // std::rand, std::rand
 
 namespace Hexicord { namespace Utils {

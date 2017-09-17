@@ -1,18 +1,34 @@
-#include <hexicord/internal/rest.hpp>
+#include "hexicord/internal/rest.hpp"
 
+#include <cstdint>                                  // uint8_t
 #include <locale>                                   // std::tolower, std::locale
 #include <boost/asio/ssl/rfc2818_verification.hpp>  // boost::asio::ssl::rfc2818_verification.hpp
 #include <boost/asio/connect.hpp>                   // boost::asio::connect
+#include <boost/asio/io_service.hpp>                // boost::asio::io_service
+#include <boost/asio/ip/tcp.hpp>                    // boost::asio::ip::tcp
+#include <boost/asio/ssl/error.hpp>                 // boost::asio::ssl::error
+#include <boost/asio/ssl/context.hpp>               // boost::asio::ssl::context
+#include <boost/asio/ssl/stream.hpp>                // boost::asio::ssl::stream
+#include <boost/beast/http/error.hpp>               // boost::beast::http::error
 #include <boost/beast/http/write.hpp>               // boost::beast::http::write
 #include <boost/beast/http/read.hpp>                // boost::beast::http::read
-#include <boost/beast/http/vector_body.hpp>         // boost::beast::http::vecor_body
+#include <boost/beast/http/vector_body.hpp>         // boost::beast::http::vector_body
 #include <boost/beast/core/flat_buffer.hpp>         // boost::beast::flat_buffer
-#include <hexicord/internal/utils.hpp>              // Utils::randomAsciiString
+#include "hexicord/internal/utils.hpp"              // Hexicord::Utils::randomAsciiString
 
 namespace ssl = boost::asio::ssl;
 using     tcp = boost::asio::ip::tcp;
 
 namespace Hexicord { namespace REST {
+struct HTTPSConnectionInternal {
+    HTTPSConnectionInternal(boost::asio::io_service& ios)
+        : tlsctx(boost::asio::ssl::context::tlsv12_client)
+        , stream(ios, tlsctx) {}
+
+    boost::asio::ssl::context tlsctx;
+    boost::asio::ssl::stream<boost::asio::ip::tcp::socket> stream;
+};
+
 namespace _detail {
     std::string stringToLower(const std::string& input) {
         std::string result;
@@ -27,28 +43,25 @@ namespace _detail {
 
 HTTPSConnection::HTTPSConnection(boost::asio::io_service& ioService, const std::string& serverName) 
     : serverName(serverName)
-    , tlsctx(boost::asio::ssl::context::tlsv12_client)
-    , stream(ioService, tlsctx) {
+    , connection(new HTTPSConnectionInternal(ioService)) {
 
-
-    tlsctx.set_verify_mode(ssl::verify_peer | ssl::verify_fail_if_no_peer_cert);
-    tlsctx.set_verify_callback(ssl::rfc2818_verification(serverName));
-    tlsctx.set_default_verify_paths();
+    connection->tlsctx.set_verify_mode(ssl::verify_peer | ssl::verify_fail_if_no_peer_cert);
+    connection->tlsctx.set_verify_callback(ssl::rfc2818_verification(serverName));
+    connection->tlsctx.set_default_verify_paths();
 }
 
 void HTTPSConnection::open() {
-    tcp::resolver resolver(stream.get_io_service());
-    resolutionResult = resolver.resolve({ serverName, "https" });
+    tcp::resolver resolver(connection->stream.get_io_service());
 
-    boost::asio::connect(stream.next_layer(), resolutionResult);
-    stream.next_layer().set_option(tcp::no_delay(true));
-    stream.handshake(ssl::stream_base::client);
+    boost::asio::connect(connection->stream.next_layer(), resolver.resolve({ serverName, "https" }));
+    connection->stream.next_layer().set_option(tcp::no_delay(true));
+    connection->stream.handshake(ssl::stream_base::client);
     alive = true;
 }
 
 void HTTPSConnection::close() {
     boost::system::error_code ec;
-    stream.shutdown(ec);
+    connection->stream.shutdown(ec);
     if (ec && 
         ec != boost::asio::error::eof && 
         ec != boost::asio::ssl::error::stream_truncated &&
@@ -57,12 +70,12 @@ void HTTPSConnection::close() {
 
         throw boost::system::system_error(ec);
     }
-    stream.next_layer().close();
+    connection->stream.next_layer().close();
     alive = false;
 }
 
 bool HTTPSConnection::isOpen() const {
-    return stream.lowest_layer().is_open() && alive;
+    return connection->stream.lowest_layer().is_open() && alive;
 }
 
 HTTPResponse HTTPSConnection::request(const HTTPRequest& request) {
@@ -107,12 +120,12 @@ HTTPResponse HTTPSConnection::request(const HTTPRequest& request) {
 
     rawRequest.prepare_payload();
     alive = false;
-    boost::beast::http::write(stream, rawRequest, ec);
+    boost::beast::http::write(connection->stream, rawRequest, ec);
     if (ec && ec != boost::beast::http::error::end_of_stream) throw boost::system::system_error(ec);
 
     boost::beast::http::response<boost::beast::http::vector_body<uint8_t> > response;
     boost::beast::flat_buffer buffer;
-    boost::beast::http::read(stream, buffer, response);
+    boost::beast::http::read(connection->stream, buffer, response);
 
     REST::HTTPResponse responseStruct;
     responseStruct.statusCode = response.result_int();

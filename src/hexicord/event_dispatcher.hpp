@@ -22,8 +22,12 @@
 #ifndef HEXICORD_EVENTDISPATCHER_HPP
 #define HEXICORD_EVENTDISPATCHER_HPP 
 
-#include <unordered_map>
-#include <hexicord/json.hpp>
+#include <unordered_map>        // std::unordered_map
+#include <functional>           // std::function
+#include <cstddef>              // size_t
+#include <string>               // std::string
+#include <vector>               // std::vector
+#include "hexicord/json.hpp"    // nlohmann::json
 
 namespace Hexicord {
     enum class Event {

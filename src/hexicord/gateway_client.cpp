@@ -19,17 +19,24 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include <hexicord/gateway_client.hpp>
+#include "hexicord/gateway_client.hpp"
 
-#include <chrono>
-#include <hexicord/config.hpp>
-#include <hexicord/internal/utils.hpp>
+#include <cassert> // assert
+#include <chrono> // std::chrono::steady_clock
+#include <unordered_map> // std::unordered_map
+#include <boost/asio/error.hpp> // boost::asio::error
+#include <boost/asio/io_service.hpp> // boost::asio::io_service
+#include <boost/beast/websocket/error.hpp> // boost::beast::websocket::error
+#include "hexicord/config.hpp" // HEXICORD_ZLIB HEXICORD_DEBUG_LOG
+#include "hexicord/internal/wss.hpp" // Hexicord::TLSWebSocket
+#include "hexicord/internal/utils.hpp" // Hexicord::Utils::domainFromUrl
+
 #ifdef HEXICORD_ZLIB
-#include <hexicord/internal/zlib.hpp>
+    #include "hexicord/internal/zlib.hpp" // Hexicord::Zlib::decompress
 #endif
 
-#if defined(HEXICORD_DEBUG_LOG)
-    #include <iostream>
+#ifdef HEXICORD_DEBUG_LOG
+    #include <iostream> //
     #define DEBUG_MSG(msg) do { std::cerr <<  "gateway_client.cpp:" << __LINE__ << " " << (msg) << '\n'; } while (false)
 #else
     #define DEBUG_MSG(msg)

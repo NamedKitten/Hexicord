@@ -22,10 +22,11 @@
 #ifndef HEXICORD_RATELIMIT_LOCK_HPP
 #define HEXICORD_RATELIMIT_LOCK_HPP
 
-#include <unordered_map>
-#include <string>
-#include <functional>
-#include <list>
+#include <ctime>            // time_t
+#include <unordered_map>    // std::unordered_map
+#include <string>           // std::string
+#include <functional>       // std::function
+#include <list>             // std::list
 
 namespace Hexicord
 {

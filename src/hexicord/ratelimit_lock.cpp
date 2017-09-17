@@ -19,13 +19,13 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "ratelimit_lock.hpp"
-#include <chrono>
-#include <thread>
-#include <ctime>
-#include <hexicord/config.hpp>
+#include "hexicord/ratelimit_lock.hpp"
 
-#if defined(HEXICORD_DEBUG_LOG) && defined(HEXICORD_DEBUG_RATELIMITLOCK) 
+#include <chrono>               // std::chrono::seconds
+#include <thread>               // std::this_thread::sleep_for
+#include "hexicord/config.hpp"  // HEXICORD_DEBUG_LOG
+
+#ifdef HEXICORD_DEBUG_LOG
     #include <iostream>
     #define DEBUG_MSG(msg) do { std::cerr << "ratelimit_lock.cpp:" << __LINE__ << "\t" << (msg) << '\n'; } while (false)
 #else

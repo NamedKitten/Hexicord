@@ -1,9 +1,9 @@
-#include <hexicord/types/file.hpp>
+#include "hexicord/types/file.hpp"
 
 #include <iterator>                    // std::istreambuf_iterator
 #include <algorithm>                   // std::copy
 #include <fstream>                     // std::ifstream
-#include <hexicord/internal/utils.hpp> // Utils::split
+#include "hexicord/internal/utils.hpp" // Utils::split
 
 #if _WIN32
     #define PATH_DELIMITER '\\'

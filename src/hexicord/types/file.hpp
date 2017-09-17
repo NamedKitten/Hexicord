@@ -1,8 +1,10 @@
 #ifndef HEXICORD_TYPES_FILE_HPP
 #define HEXICORD_TYPES_FILE_HPP
 
+#include <cstdint>  // uint8_t
 #include <string>   // std::string
 #include <vector>   // std::vector
+#include <iosfwd>   // std::istream
 
 namespace Hexicord {
     /**
