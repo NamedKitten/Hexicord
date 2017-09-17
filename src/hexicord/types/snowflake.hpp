@@ -1,10 +1,11 @@
 #ifndef HEXICORD_TYPES_SNOWFLAKE_HPP
 #define HEXICORD_TYPES_SNOWFLAKE_HPP
 
+#include <cstdint>                     // uint64_t
 #include <string>                      // std::string
 #include <vector>                      // std::vector
 #include <functional>                  // std::hash
-#include <hexicord/json.hpp>           // nlohmann::json
+#include "hexicord/json.hpp"           // nlohmann::json
 
 namespace Hexicord {
     struct Snowflake {
@@ -14,10 +15,10 @@ namespace Hexicord {
         explicit Snowflake(const char* strvalue) : value(std::stoull(strvalue)) {}
 
         struct Parts {
-            unsigned      counter       : 12;
-            unsigned      processId     : 5;
-            unsigned      workerId      : 5;
-            unsigned long timestamp     : 42;
+            unsigned counter       : 12;
+            unsigned processId     : 5;
+            unsigned workerId      : 5;
+            uint64_t timestamp     : 42;
         };
 
         union {
@@ -49,7 +50,7 @@ namespace Hexicord {
 
 namespace std {
     template<>
-    class hash<Hexicord::Snowflake> {
+    struct hash<Hexicord::Snowflake> {
     public:
         constexpr inline size_t operator()(const Hexicord::Snowflake& snowflake) const {
             return static_cast<uint64_t>(snowflake);
