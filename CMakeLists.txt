@@ -42,6 +42,10 @@ message(STATUS "Configuring Hexicord ${HEXICORD_VERSION}")
 #------------------------------------------------------------------------------
 # Global building configuration (C++ standard, defines, warning flags).
 
+if(WIN32 OR MINGW OR CYGWIN OR MSYS)
+    message(WARNING "Builds for Windows is not supported yet. But we would appreciate if you help us with it.")
+endif()
+
 # Generate compilation database for YouCompleteMe and stuff like clang-tidy.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -51,7 +55,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Allow some tweaks in build process without changing CMakeLists.
-option(HEXICORD_WERROR  "Build with -Werror flag."                 OFF)
+option(HEXICORD_WERROR  "Build with -Werror flag."                 ON )
 option(HEXICORD_WSTRICT "Build with really strict warning flags."  OFF)
 
 # Check if used compiler supports warning flags we use.
@@ -76,7 +80,11 @@ if(("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") OR
         set(WARNING_FLAGS ${WARNING_FLAGS} -Werror)
     endif()
 else()
-    message(WARNING "Using WERROR/WSTRICT with non-GCC like compiler is not supported. Ignoring.")
+    if (HEXICORD_WSTRICT)
+        message(WARNING "Using WERROR/WSTRICT with non-GCC like compiler is not supported. Ignoring.")
+    endif()
+
+    message(WARNING "Builds using non-GCC like compiler is not supported yet. But we would appreciate if you help us with it.")
 endif()
 
 
