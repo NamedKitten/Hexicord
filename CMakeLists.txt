@@ -81,32 +81,6 @@ endif()
 
 
 #------------------------------------------------------------------------------
-# Documentation (Doxygen)
-
-find_package(Doxygen)
-option(HEXICORD_DOCS    "Generate HTML documentation (Doxygen)"    ${DOXYGEN_FOUND})
-if(HEXICORD_DOCS)
-    if (NOT DOXYGEN_FOUND)
-        message(FATAL_ERROR "Doxygen is required to build documentation.")
-        # Don't have to put everything else in else branch because FATAL_ERROR aborts configuration.
-    endif()
-
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-
-    add_custom_target(doc ALL
-                      COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
-                      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-                      COMMENT "Generating HTML API documentation using Doxygen"
-                      SOURCES ${PROJECT_SOURCE_DIR}/Doxyfile.in
-                      BYPRODUCTS ${PROJECT_BINARY_DIR}/docs
-                      VERBATIM
-                      )
-
-    install(DIRECTORY ${PROJECT_BINARY_DIR}/docs/ DESTINATION share/doc/hexicord)
-endif()
-
-
-#------------------------------------------------------------------------------
 # External dependencies
 
 option(Boost_USE_STATIC_LIBS    "Use static boost libraries." OFF)
@@ -234,9 +208,88 @@ install(TARGETS hexicord
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
 
+#------------------------------------------------------------------------------
+# Examples
 
 option(HEXICORD_EXAMPLES "Build examples." OFF)
 
 if(HEXICORD_EXAMPLES)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/examples)
+    file(GLOB EXAMPLES
+         LIST_DIRECTORIES TRUE
+         RELATIVE ${HEXICORD_SOURCE_DIR}/examples
+         ${HEXICORD_SOURCE_DIR}/examples/*/)
+
+    foreach(example ${EXAMPLES})
+        if (IS_DIRECTORY ${HEXICORD_SOURCE_DIR}/examples/${example})
+            message(STATUS "Example: ${example}")
+            if(EXISTS ${HEXICORD_SOURCE_DIR}/examples/${example}/CMakeLists.txt)
+                add_subdirectory(${HEXICORD_SOURCE_DIR}/examples/${example})
+            else()
+                file(GLOB example_sources ${HEXICORD_SOURCE_DIR}/examples/${example}/*.cpp
+                                          ${HEXICORD_SOURCE_DIR}/examples/${example}/*.hpp)
+                add_executable(${example} ${example_sources})
+                target_link_libraries(${example} hexicord)
+            endif()
+        endif()
+    endforeach()
+endif()
+
+
+#------------------------------------------------------------------------------
+# Documentation (Doxygen)
+
+find_package(Doxygen)
+option(HEXICORD_DOCS    "Generate HTML documentation (Doxygen)"    ${DOXYGEN_FOUND})
+if(HEXICORD_DOCS)
+    if (NOT DOXYGEN_FOUND)
+        message(FATAL_ERROR "Doxygen is required to build documentation.")
+        # Don't have to put everything else in else branch because FATAL_ERROR aborts configuration.
+    endif()
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+
+    add_custom_command(OUTPUT ${HEXICORD_BINARY_DIR}/doc
+                       COMMAND ${DOXYGEN_EXECUTABLE} ${HEXICORD_BINARY_DIR}/Doxyfile
+                       WORKING_DIRECTORY ${HEXICORD_BINARY_DIR}
+                       COMMENT "Generating HTML API documentation using Doxygen"
+                       VERBATIM
+                       )
+    add_custom_target(doc ALL
+                      DEPENDS ${HEXICORD_SOURCES} ${HEXICORD_SOURCE_DIR}/Doxyfile.in
+                      )
+
+    install(DIRECTORY ${HEXICORD_BINARY_DIR}/docs/ DESTINATION share/doc/hexicord)
+endif()
+
+
+#------------------------------------------------------------------------------
+# Linters
+
+option(HEXICORD_LINT "Add clang-tidy and iwyu targets." OFF)
+
+if (HEXICORD_LINT)
+    find_package(PythonInterp)
+    find_program(iwyu_tool_path NAMES iwyu_tool.py)
+    if (iwyu_tool_path AND PYTHONINTERP_FOUND)
+        add_custom_target(iwyu
+                          COMMAND "${PYTHON_EXECUTABLE}" "${iwyu_tool_path}" -p "${HEXICORD_BINARY_DIR}"
+                          COMMENT "Running include-what-you-use tool"
+                          VERBATIM
+                          )
+        add_dependencies(iwyu hexicord)
+    else()
+        message(WARNING "No iwyu_tool.py found, thus no iwyu target.")
+    endif()
+
+    find_program(clangtidy_path NAMES clang-tidy)
+    if (clangtidy_path)
+        add_custom_target(clang-tidy
+                          COMMAND "${clangtidy_path}" -p "${HEXICORD_BINARY_DIR}" ${HEXICORD_SOURCES}
+                          COMMENT "Running clang-tidy tool"
+                          SOURCES ${HEXICORD_SOURCE_DIR}/.clang-tidy
+                          )
+        add_dependencies(clang-tidy hexicord)
+    else()
+        message(WARNING "No clang-tidy found, thus no clang-tidy target.")
+    endif()
 endif()
