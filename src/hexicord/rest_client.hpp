@@ -700,6 +700,23 @@ namespace Hexicord {
          */
         void takeRole(Snowflake guildId, Snowflake userId, Snowflake roleId);
 
+        /**
+         * Get number of members that would be removed in a prune operation.
+         *
+         * Requires 'KICK_MEMBERS' permission.
+         */
+        unsigned getGuildPruneCount(Snowflake guildId, unsigned days);
+
+        /**
+         * Begin a prune operation.
+         *
+         * Requires the 'KICK_MEMBERS' permission.
+         *
+         * Returns value indicating the number of members that
+         * were removed in the prune operation.
+         */
+        unsigned beginGuildPrune(Snowflake guildId, unsigned days);
+
         /// @} REST_guilds
 
         /**

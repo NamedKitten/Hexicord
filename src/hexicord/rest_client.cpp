@@ -512,6 +512,16 @@ namespace Hexicord {
                                               "/roles/"   + std::to_string(roleId));
     }
 
+    unsigned RestClient::getGuildPruneCount(Snowflake guildId, unsigned days) {
+        return sendRestRequest("GET", std::string("/guilds/") + std::to_string(guildId) +
+                                                  "/prune", {}, {{ "days", std::to_string(days) }})["pruned"];
+    }
+
+    unsigned RestClient::beginGuildPrune(Snowflake guildId, unsigned days) {
+        return sendRestRequest("POST", std::string("/guilds/") + std::to_string(guildId) +
+                                                   "/prune", {}, {{ "days", std::to_string(days) }})["pruned"];
+    }
+
     nlohmann::json RestClient::getMe() {
         return sendRestRequest("GET", std::string("/users/@me"));
     }
