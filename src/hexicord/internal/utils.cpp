@@ -85,7 +85,7 @@ namespace Hexicord { namespace Utils {
                 bytes[10] == 'B' &&
                 bytes[11] == 'P';
         }
-    }
+    } // namespace Magic
 
 	std::string domainFromUrl(const std::string& url) {
 	   enum State {
@@ -94,7 +94,7 @@ namespace Hexicord { namespace Utils {
 	       ReadingSchema_FirstSlash,
 	       ReadingSchema_SecondSlash,
 	       ReadingDomain,
-	       End 
+	       End
 	   } state = ReadingSchema;
 
 	   std::string result;
@@ -143,28 +143,28 @@ namespace Hexicord { namespace Utils {
 	   return result;
 	}
 
-	std::string base64Encode(const std::vector<uint8_t>& data)
+	std::string base64Encode(const std::vector<uint8_t>& bytes)
 	{
-	   static constexpr uint8_t base64Map[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	   static constexpr uint8_t Base64Map[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 	   // Use = signs so the end is properly padded.
-	   std::string result((((data.size() + 2) / 3) * 4), '=');
+	   std::string result((((bytes.size() + 2) / 3) * 4), '=');
 	   size_t outpos = 0;
-	   int bits_collected = 0;
+	   int bitsCollected = 0;
 	   unsigned accumulator = 0;
 
-	   for (uint8_t byte : data) {
+	   for (uint8_t byte : bytes) {
 	      accumulator = (accumulator << 8) | (byte & 0xffu);
-	      bits_collected += 8;
-	      while (bits_collected >= 6) {
-	         bits_collected -= 6;
-	         result[outpos++] = base64Map[(accumulator >> bits_collected) & 0x3fu];
+	      bitsCollected += 8;
+	      while (bitsCollected >= 6) {
+	         bitsCollected -= 6;
+	         result[outpos++] = Base64Map[(accumulator >> bitsCollected) & 0x3fu];
 	      }
 	   }
-	   if (bits_collected > 0) { // Any trailing bits that are missing.
-	      assert(bits_collected < 6);
-	      accumulator <<= 6 - bits_collected;
-	      result[outpos++] = base64Map[accumulator & 0x3fu];
+	   if (bitsCollected > 0) { // Any trailing bits that are missing.
+	      assert(bitsCollected < 6);
+	      accumulator <<= 6 - bitsCollected;
+	      result[outpos++] = Base64Map[accumulator & 0x3fu];
 	   }
 	   assert(outpos >= (result.size() - 2));
 	   assert(outpos <= result.size());
@@ -256,12 +256,12 @@ namespace Hexicord { namespace Utils {
     std::string randomAsciiString(unsigned length) {
         RandomSeedGuard randGuard;
 
-        constexpr char const asciiCharacters[] = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        constexpr char const AsciiCharacters[] = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         std::string result;
         result.reserve(length);
         while (result.size() != length) {
-            result.push_back(asciiCharacters[std::rand() % sizeof(asciiCharacters)]);
+            result.push_back(AsciiCharacters[std::rand() % sizeof(AsciiCharacters)]);
         }
         return result;
     }

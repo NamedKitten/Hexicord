@@ -22,13 +22,13 @@
 #include "hexicord/event_dispatcher.hpp"
 
 namespace Hexicord {
-    void EventDispatcher::addHandler(Event eventType, EventDispatcher::EventHandler handler) {
+    void EventDispatcher::addHandler(Event eventType, const EventDispatcher::EventHandler& handler) {
         handlers[eventType].push_back(handler);
     }
 
     void EventDispatcher::dispatchEvent(Event type, const nlohmann::json& payload) const {
-        for (auto handler : handlers.at(type)) {
+        for (const auto& handler : handlers.at(type)) {
             handler(payload);
         }
     }
-}
+} // namespace Hexicord

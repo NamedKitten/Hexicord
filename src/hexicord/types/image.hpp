@@ -64,7 +64,7 @@ namespace Hexicord {
     /**
      * Implementation details. Probably not what you looking for.
      */
-    namespace _detail {
+    namespace _Detail {
         std::vector<uint8_t> cdnDownload(boost::asio::io_service& ioService, const std::string& path);
 
         inline constexpr bool isPowerOfTwo(unsigned number) {
@@ -92,7 +92,7 @@ namespace Hexicord {
         template<> inline std::string formatExtension<Png>()  { return "png";  }
         template<> inline std::string formatExtension<Webp>() { return "webp"; }
         template<> inline std::string formatExtension<Gif>()  { return "gif";  }
-    } // namespace _detail
+    } // namespace _Detail
 
     /**
      * Reference to remote image stored on Discord CDN.
@@ -116,8 +116,8 @@ namespace Hexicord {
             // Construct path like this:
             //   {base_path}/{id}/{hash}.{format_extension}?size={size}
             //   avatars/339355417366888458/35fa476e4898faf740cc48edb989f20c.png?size=2048
-            return _detail::basePath<Type>() + "/" + std::to_string(id) + "/" +
-                   hash + "." + _detail::formatExtension<Format>() +
+            return _Detail::basePath<Type>() + "/" + std::to_string(id) + "/" +
+                   hash + "." + _Detail::formatExtension<Format>() +
                    "?size=" + std::to_string(size);
         }
 
@@ -143,11 +143,11 @@ namespace Hexicord {
          */
         template<ImageFormat Format>
         inline Image download(boost::asio::io_service& ioService, unsigned short size) const {
-            static_assert(_detail::isSupportedFormat(Type, Format), "Format is not supported for this image type.");
-            if (!_detail::isPowerOfTwo(size)) throw LogicError("Image size must be power of two.", -1);
+            static_assert(_Detail::isSupportedFormat(Type, Format), "Format is not supported for this image type.");
+            if (!_Detail::isPowerOfTwo(size)) throw LogicError("Image size must be power of two.", -1);
 
-            return Image(File(hash + "." + _detail::formatExtension<Format>(),
-                              _detail::cdnDownload(ioService, url<Format>(size))),
+            return Image(File(hash + "." + _Detail::formatExtension<Format>(),
+                              _Detail::cdnDownload(ioService, url<Format>(size))),
                          Format);
         }
 
@@ -170,14 +170,14 @@ namespace Hexicord {
          */
         template<ImageFormat Format>
         inline std::string url(unsigned short size) const {
-            static_assert(_detail::isSupportedFormat(CustomEmoji, Format), "Format is not supported for this image type.");
-            if (!_detail::isPowerOfTwo(size)) throw LogicError("Image size must be power of two.", -1);
+            static_assert(_Detail::isSupportedFormat(CustomEmoji, Format), "Format is not supported for this image type.");
+            if (!_Detail::isPowerOfTwo(size)) throw LogicError("Image size must be power of two.", -1);
 
             // Construct path like this:
             //   {base_path}/{id}/{hash}.{format_extension}?size={size}
             //   avatars/339355417366888458/35fa476e4898faf740cc48edb989f20c.png?size=2048
-            return _detail::basePath<CustomEmoji>() + "/" +
-                   hash + "." + _detail::formatExtension<Format>() +
+            return _Detail::basePath<CustomEmoji>() + "/" +
+                   hash + "." + _Detail::formatExtension<Format>() +
                    "?size=" + std::to_string(size);
         }
 
@@ -203,8 +203,8 @@ namespace Hexicord {
          */
         template<ImageFormat Format>
         inline Image download(boost::asio::io_service& ioService, unsigned short size) const {
-            return Image(File(hash + "." + _detail::formatExtension<Format>(),
-                              _detail::cdnDownload(ioService, url<Format>(size))),
+            return Image(File(hash + "." + _Detail::formatExtension<Format>(),
+                              _Detail::cdnDownload(ioService, url<Format>(size))),
                          Format);
         }
 
@@ -229,8 +229,8 @@ namespace Hexicord {
             // Construct path like this:
             //   {base_path}/{id}/{hash}.{format_extension}?size={size}
             //   avatars/339355417366888458/35fa476e4898faf740cc48edb989f20c.png?size=2048
-            return _detail::basePath<DefaultUserAvatar>() + "/" +
-                   std::to_string(userDiscriminator % 5) + "." + _detail::formatExtension<Format>() +
+            return _Detail::basePath<DefaultUserAvatar>() + "/" +
+                   std::to_string(userDiscriminator % 5) + "." + _Detail::formatExtension<Format>() +
                    "?size=" + std::to_string(size);
         }
 
@@ -255,11 +255,11 @@ namespace Hexicord {
          */
         template<ImageFormat Format>
         inline Image download(boost::asio::io_service& ioService, unsigned short size) const {
-            static_assert(_detail::isSupportedFormat(CustomEmoji, Format), "Format is not supported for this image type.");
-            if (!_detail::isPowerOfTwo(size)) throw LogicError("Image size must be power of two.", -1);
+            static_assert(_Detail::isSupportedFormat(CustomEmoji, Format), "Format is not supported for this image type.");
+            if (!_Detail::isPowerOfTwo(size)) throw LogicError("Image size must be power of two.", -1);
 
-            return Image(File(std::to_string(userDiscriminator % 5) + "." + _detail::formatExtension<Format>(),
-                              _detail::cdnDownload(ioService, url<Format>(size))),
+            return Image(File(std::to_string(userDiscriminator % 5) + "." + _Detail::formatExtension<Format>(),
+                              _Detail::cdnDownload(ioService, url<Format>(size))),
                          Format);
         }
 

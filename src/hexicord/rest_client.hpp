@@ -150,7 +150,7 @@ namespace Hexicord {
                                      boost::optional<int> position = boost::none,
                                      boost::optional<std::string> topic = boost::none,
                                      boost::optional<unsigned> bitrate = boost::none,
-                                     boost::optional<unsigned short> usersLimit = boost::none);
+                                     boost::optional<uint16_t> usersLimit = boost::none);
 
         /// Same as \def modifyChannel, but changes only name.
         inline nlohmann::json setChannelName(Snowflake channelId, const std::string& newName) {
@@ -169,7 +169,7 @@ namespace Hexicord {
             return modifyChannel(voiceChannelId, boost::none, boost::none, boost::none, newBitrate);
         }
         /// Same as \def modifyChannel, but changes only users limit.
-        inline nlohmann::json setChannelUsersLimit(Snowflake voiceChannelId, unsigned short newLimit) {
+        inline nlohmann::json setChannelUsersLimit(Snowflake voiceChannelId, uint16_t newLimit) {
             return modifyChannel(voiceChannelId, boost::none, boost::none, boost::none, boost::none, newLimit);
         }
 
@@ -755,7 +755,7 @@ namespace Hexicord {
          *
          * \returns User object after change.
          */
-        nlohmann::json setAvatar(const Image& image);
+        nlohmann::json setAvatar(const Image& avatar);
 
         /**
          * Returns list of partial guild object the current user is member of.
@@ -783,7 +783,7 @@ namespace Hexicord {
          * \param startId  Get guilds **after** this guild ID.
          * \param before   Get guilds **before** startId, not after.
          */
-        nlohmann::json getUserGuilds(unsigned short limit = 100, Snowflake startId = 0, bool before = false);
+        nlohmann::json getUserGuilds(uint16_t limit = 100, Snowflake startId = 0, bool before = false);
 
         /**
          * Leave a guild.
@@ -933,7 +933,7 @@ namespace Hexicord {
         /**
          * Change webhook avatar, image must be 128x128.
          */
-        nlohmann::json setWebhookAvatar(Snowflake id, const Image& image);
+        nlohmann::json setWebhookAvatar(Snowflake id, const Image& newAvatar);
 
         /**
          * Delete webhook by it's id.
@@ -976,6 +976,6 @@ private:
         std::shared_ptr<REST::HTTPSConnection> restConnection;
         boost::asio::io_service& ioService; // non-owning reference to I/O service.
     };
-}
+} // namespace Hexicord
 
 #endif // HEXICORD_REST_CLIENT_HPP

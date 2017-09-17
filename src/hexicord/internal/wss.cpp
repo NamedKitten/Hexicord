@@ -37,7 +37,7 @@ namespace ssl = boost::asio::ssl;
 
 namespace Hexicord {
     struct WSSTLSConnection {
-        WSSTLSConnection(boost::asio::io_service& ios)
+        explicit WSSTLSConnection(boost::asio::io_service& ios)
             : tlsContext(boost::asio::ssl::context::tlsv12_client)
             , wsStream(ios, tlsContext) {}
 
@@ -77,13 +77,13 @@ namespace Hexicord {
         return std::vector<uint8_t>(bufferData, bufferData + bufferSize);
     }
 
-    void TLSWebSocket::asyncReadMessage(TLSWebSocket::AsyncReadCallback callback) {
+    void TLSWebSocket::asyncReadMessage(const TLSWebSocket::AsyncReadCallback& callback) {
         std::shared_ptr<boost::beast::flat_buffer> buffer(new boost::beast::flat_buffer);
 
         connection->wsStream.async_read(*buffer, [this, buffer, callback](boost::system::error_code ec, unsigned long length) {
             // buffer captured by value into lambda.
             // so they will exist here and hold ownership.
-        
+
             auto bufferData = boost::asio::buffer_cast<const uint8_t*>(*buffer->data().begin());
             std::vector<uint8_t> vectorBuffer(bufferData, bufferData + length);
 
@@ -94,7 +94,7 @@ namespace Hexicord {
         });
     }
 
-    void TLSWebSocket::asyncSendMessage(const std::vector<uint8_t>& message, TLSWebSocket::AsyncSendCallback callback) {
+    void TLSWebSocket::asyncSendMessage(const std::vector<uint8_t>& message, const TLSWebSocket::AsyncSendCallback& callback) {
         connection->wsStream.async_write(boost::asio::buffer(message.data(), message.size()), [this, callback] (boost::system::error_code ec) {
             callback(*this, ec);
         });

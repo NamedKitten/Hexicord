@@ -21,7 +21,7 @@ using     tcp = boost::asio::ip::tcp;
 
 namespace Hexicord { namespace REST {
 struct HTTPSConnectionInternal {
-    HTTPSConnectionInternal(boost::asio::io_service& ios)
+    explicit HTTPSConnectionInternal(boost::asio::io_service& ios)
         : tlsctx(boost::asio::ssl::context::tlsv12_client)
         , stream(ios, tlsctx) {}
 
@@ -29,7 +29,7 @@ struct HTTPSConnectionInternal {
     boost::asio::ssl::stream<boost::asio::ip::tcp::socket> stream;
 };
 
-namespace _detail {
+namespace _Detail {
     std::string stringToLower(const std::string& input) {
         std::string result;
         result.reserve(input.size());
@@ -39,7 +39,7 @@ namespace _detail {
         }
         return result;
     }
-}
+} // namespace _Detail
 
 HTTPSConnection::HTTPSConnection(boost::asio::io_service& ioService, const std::string& serverName) 
     : serverName(serverName)

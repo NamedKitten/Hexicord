@@ -71,6 +71,6 @@ namespace Zlib {
         inflateEnd(&stream);
         return result;
     }
-}
-}
+}} // namespace Zlib
+
 #endif

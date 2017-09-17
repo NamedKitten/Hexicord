@@ -86,7 +86,7 @@ namespace Hexicord {
          *
          *  This method is thread-safe.
          */
-        void asyncReadMessage(AsyncReadCallback callback);
+        void asyncReadMessage(const AsyncReadCallback& callback);
 
         /**
          *  Asynchronusly send message and call callback when done (or error occured).
@@ -98,7 +98,7 @@ namespace Hexicord {
          *
          *  This method is NOT thread-safe.
          */
-        void asyncSendMessage(const std::vector<uint8_t>& message, AsyncSendCallback callback);
+        void asyncSendMessage(const std::vector<uint8_t>& message, const AsyncSendCallback& callback);
 
         /**
          *  Perform TCP handshake, TLS handshake and WS handshake.

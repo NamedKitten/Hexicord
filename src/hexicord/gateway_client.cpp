@@ -21,15 +21,15 @@
 
 #include "hexicord/gateway_client.hpp"
 
-#include <cassert> // assert
-#include <chrono> // std::chrono::steady_clock
-#include <unordered_map> // std::unordered_map
-#include <boost/asio/error.hpp> // boost::asio::error
-#include <boost/asio/io_service.hpp> // boost::asio::io_service
+#include <cassert>                         // assert
+#include <chrono>                          // std::chrono::steady_clock
+#include <unordered_map>                   // std::unordered_map
+#include <boost/asio/error.hpp>            // boost::asio::error
+#include <boost/asio/io_service.hpp>       // boost::asio::io_service
 #include <boost/beast/websocket/error.hpp> // boost::beast::websocket::error
-#include "hexicord/config.hpp" // HEXICORD_ZLIB HEXICORD_DEBUG_LOG
-#include "hexicord/internal/wss.hpp" // Hexicord::TLSWebSocket
-#include "hexicord/internal/utils.hpp" // Hexicord::Utils::domainFromUrl
+#include "hexicord/config.hpp"             // HEXICORD_ZLIB HEXICORD_DEBUG_LOG
+#include "hexicord/internal/wss.hpp"       // Hexicord::TLSWebSocket
+#include "hexicord/internal/utils.hpp"     // Hexicord::Utils::domainFromUrl
 
 #ifdef HEXICORD_ZLIB
     #include "hexicord/internal/zlib.hpp" // Hexicord::Zlib::decompress
@@ -234,9 +234,9 @@ nlohmann::json GatewayClient::waitForEvent(Event type) {
             eventEnumFromString(lastMessage["t"]) == type) {
 
             break;
-        } else {
-            processMessage(lastMessage);
         }
+
+        processMessage(lastMessage);
     }
 
     skipMessages = false;

@@ -31,7 +31,7 @@ ImageFormat Image::detectFormat(const File& file) {
     throw LogicError("Failed to detect image format.", -1);
 }
 
-namespace _detail {
+namespace _Detail {
     std::vector<uint8_t> cdnDownload(boost::asio::io_service& ioService, const std::string& path) {
         REST::HTTPSConnection connection(ioService, "cdn.discordapp.com");
         connection.open();
@@ -42,7 +42,7 @@ namespace _detail {
         request.version = 11;
 
         REST::HTTPResponse response = connection.request(request);
-        if (response.body.size() == 0) {
+        if (response.body.empty()) {
             throw LogicError("Response body is empty (are you trying to download non-animated avatar as GIF?)", -1);
         }
         if (response.statusCode != 200) {
@@ -51,6 +51,6 @@ namespace _detail {
 
         return response.body;
     }
-} // namespace _detail
+} // namespace _Detail
 
 } // namespace Hexicord

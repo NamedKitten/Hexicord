@@ -140,7 +140,7 @@ namespace Hexicord {
                                          boost::optional<int> position,
                                          boost::optional<std::string> topic,
                                          boost::optional<unsigned> bitrate,
-                                         boost::optional<unsigned short> usersLimit) {
+                                         boost::optional<uint16_t> usersLimit) {
         nlohmann::json payload;
         if (name) {
             if (name->size() > 100 || name->size() < 2) {
@@ -193,23 +193,23 @@ namespace Hexicord {
                                     { "limit", std::to_string(limit) }});
     }
 
-    nlohmann::json RestClient::getMessages(Snowflake channelId, RestClient::Before afterId, unsigned limit) {
+    nlohmann::json RestClient::getMessages(Snowflake channelId, RestClient::Before beforeId, unsigned limit) {
         if (limit > 100 || limit == 0) {
             throw InvalidParameter("limit", "limit out of range (should be 1-100).");
         }
 
         return sendRestRequest("GET", std::string("/channels/") + std::to_string(channelId) + "/messages",
-                               {}, {{ "before", std::to_string(afterId.id) },
+                               {}, {{ "before", std::to_string(beforeId.id) },
                                     { "limit", std::to_string(limit) }});
     }
 
-    nlohmann::json RestClient::getMessages(Snowflake channelId, RestClient::Around afterId, unsigned limit) {
+    nlohmann::json RestClient::getMessages(Snowflake channelId, RestClient::Around aroundId, unsigned limit) {
         if (limit > 100 || limit == 1) {
             throw InvalidParameter("limit", "limit out of range (should be 2-100).");
         }
 
         return sendRestRequest("GET", std::string("/channels/") + std::to_string(channelId) + "/messages",
-                               {}, {{ "around", std::to_string(afterId.id) },
+                               {}, {{ "around", std::to_string(aroundId.id) },
                                     { "limit", std::to_string(limit) }});
     }
 
@@ -527,7 +527,7 @@ namespace Hexicord {
         if (newUsername == "discordtag" || newUsername == "everyone" || newUsername == "here") {
             throw InvalidParameter("newUsername", "newUsername should not be 'discordtag', 'everyone' or 'here'");
         }
-        unsigned short foundGraves = 0;
+        uint16_t foundGraves = 0;
         for (char ch : newUsername) {
             if (ch == '@' || ch == '#' || ch == ':') {
                 throw InvalidParameter("newUsername", "newUsername contains foribbden characters ('@', '#' or ':')");
@@ -545,11 +545,11 @@ namespace Hexicord {
         return sendRestRequest("PATCH", "/users/@me", {{ "username", newUsername }});
     }
 
-    nlohmann::json RestClient::setAvatar(const Image& image) {
-        return sendRestRequest("PATCH", "/users/@me", {{ "avatar", image.toAvatarData() }});
+    nlohmann::json RestClient::setAvatar(const Image& avatar) {
+        return sendRestRequest("PATCH", "/users/@me", {{ "avatar", avatar.toAvatarData() }});
     }
 
-    nlohmann::json RestClient::getUserGuilds(unsigned short limit, Snowflake startId, bool before) {
+    nlohmann::json RestClient::getUserGuilds(uint16_t limit, Snowflake startId, bool before) {
         std::unordered_map<std::string, std::string> query;
         if (limit != 100) {
             query.insert({ "limit", std::to_string(limit) });
@@ -612,6 +612,7 @@ namespace Hexicord {
                                         bool unique) {
         nlohmann::json payload;
         if (maxAgeSecs != 86400)  payload["max_age"]              = maxAgeSecs;
+        if (maxUses != 0)         payload["max_uses"]             = maxUses;
         if (temporaryMembership)  payload["temporary_membership"] = true;
         if (unique)               payload["unique"]               = true;
 
@@ -652,9 +653,9 @@ namespace Hexicord {
         return sendRestRequest("PATCH", std::string("/webhooks/") + std::to_string(id), {{ "name", newName }});
     }
 
-    nlohmann::json RestClient::setWebhookAvatar(Snowflake id, const Image& avatar) {
+    nlohmann::json RestClient::setWebhookAvatar(Snowflake id, const Image& newAvatar) {
         return sendRestRequest("PATCH", std::string("/webhooks/") + std::to_string(id),
-                               {{ "avatar", avatar.toAvatarData() }});
+                               {{ "avatar", newAvatar.toAvatarData() }});
     }
 
     void RestClient::deleteWebhook(Snowflake id) {

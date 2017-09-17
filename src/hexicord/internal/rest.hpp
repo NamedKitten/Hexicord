@@ -11,7 +11,7 @@ namespace boost { namespace asio { class io_service; }}
 namespace Hexicord { namespace REST {
     struct HTTPSConnectionInternal;
 
-    namespace _detail {
+    namespace _Detail {
         std::string stringToLower(const std::string& input);
 
         struct CaseInsensibleStringEqual {
@@ -19,14 +19,14 @@ namespace Hexicord { namespace REST {
                 return stringToLower(lhs) == stringToLower(rhs);
             }
         };
-    }
+    } // namespace _Detail
 
     /// Hash-map with case-insensible string keys.
-    using HeadersMap = std::unordered_map<std::string, std::string, std::hash<std::string>, _detail::CaseInsensibleStringEqual>;
+    using HeadersMap = std::unordered_map<std::string, std::string, std::hash<std::string>, _Detail::CaseInsensibleStringEqual>;
 
     struct HTTPResponse {
         unsigned statusCode;
-        
+
         HeadersMap headers;
         std::vector<uint8_t> body;
     };
@@ -34,7 +34,7 @@ namespace Hexicord { namespace REST {
     struct HTTPRequest {
         std::string method;
         std::string path;
-        
+
         unsigned version;
         std::vector<uint8_t> body;
         HeadersMap headers;

@@ -233,7 +233,7 @@ private:
 
         nlohmann::json parseGatewayMessage(const std::vector<uint8_t>& msg);
         void processMessage(const nlohmann::json& message);
-        void sendMessage(OpCode code, const nlohmann::json& payload = {}, const std::string& t = "");
+        void sendMessage(OpCode opCode, const nlohmann::json& payload = {}, const std::string& t = "");
 
         // Calls sendHeartbeat every heartbeatIntervalMs milliseconds using
         // heartbeatTimer while heartbeat = true.

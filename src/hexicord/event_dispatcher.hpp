@@ -76,7 +76,7 @@ namespace Hexicord {
         using EventHandler        = std::function<void(const nlohmann::json&)>;
         using UnknownEventHandler = std::function<void(const std::string&, const nlohmann::json&)>;
 
-        void addHandler(Event eventType, EventHandler handler);
+        void addHandler(Event eventType, const EventHandler& handler);
 
         void dispatchEvent(Event type, const nlohmann::json& payload) const;
     private:
