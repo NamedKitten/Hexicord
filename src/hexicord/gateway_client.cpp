@@ -94,6 +94,9 @@ void GatewayClient::connect(const std::string& gatewayUrl, int shardId, int shar
     heartbeatIntervalMs = gatewayHello["d"]["heartbeat_interval"];
     DEBUG_MSG(std::string("Gateway heartbeat interval: ") + std::to_string(heartbeatIntervalMs) + " ms.");
 
+    heartbeat = true;
+    asyncHeartbeat();
+
     nlohmann::json message = {
         { "token" , token_ },
         { "properties", {
@@ -110,7 +113,6 @@ void GatewayClient::connect(const std::string& gatewayUrl, int shardId, int shar
         { "presence", initialPresence }
     };
 
-
     if (shardId != NoSharding && shardCount != NoSharding) {
         message.push_back({ "shard", { shardId, shardCount }});
     }
@@ -118,8 +120,15 @@ void GatewayClient::connect(const std::string& gatewayUrl, int shardId, int shar
     DEBUG_MSG("Sending Identify message...");
     sendMessage(OpCode::Identify, message);
 
+    activeSession = true;
+
     DEBUG_MSG("Waiting for Ready event...");
-    nlohmann::json readyPayload = waitForEvent(Event::Ready);
+    nlohmann::json readyPayload;
+    try {
+        readyPayload = waitForEvent(Event::Ready);
+    } catch (...) {
+        activeSession = false;
+    }
 
     DEBUG_MSG("Got Ready event. Starting heartbeat and polling...");
 
@@ -134,12 +143,9 @@ void GatewayClient::connect(const std::string& gatewayUrl, int shardId, int shar
     lastSequenceNumber_ = 0;
     lastPresence        = initialPresence;
 
-    activeSession = true;
-
-    heartbeat = true;
-    asyncHeartbeat();
-    poll = true;
-    asyncPoll();
+    // Already started by waitForEvent.
+    // poll = true;
+    // asyncPoll();
 }
 
 void GatewayClient::resume(const std::string& gatewayUrl,
@@ -160,6 +166,12 @@ void GatewayClient::resume(const std::string& gatewayUrl,
     DEBUG_MSG("Reading Hello message.");
     nlohmann::json gatewayHello = parseGatewayMessage(gatewayConnection->readMessage());
 
+    heartbeatIntervalMs = gatewayHello["d"]["heartbeat_interval"];
+    DEBUG_MSG(std::string("Gateway heartbeat interval: ") + std::to_string(heartbeatIntervalMs) + " ms.");
+
+    heartbeat = true;
+    asyncHeartbeat();
+
     DEBUG_MSG("Sending Resume message...");
     sendMessage(OpCode::Resume, {
         { "token",      token_             },
@@ -176,17 +188,15 @@ void GatewayClient::resume(const std::string& gatewayUrl,
     DEBUG_MSG("Got Resumed event, starting heartbeat and polling...");
     eventDispatcher.dispatchEvent(Event::Resumed, resumedPayload);
 
-    heartbeatIntervalMs = gatewayHello["d"]["heartbeat_interval"];
     lastGatewayUrl_     = gatewayUrl;
     sessionId_          = sessionId;
     lastSequenceNumber_ = lastSequenceNumber;
 
     activeSession = true;
 
-    heartbeat = true;
-    asyncHeartbeat();
-    poll = true;
-    asyncPoll();
+    // Started by waitForEvent if not running.
+    // poll = true;
+    // asyncPoll();
 }
 
 void GatewayClient::disconnect(int code) noexcept {
@@ -210,21 +220,17 @@ nlohmann::json GatewayClient::waitForEvent(Event type) {
     DEBUG_MSG(std::string("Waiting for event, type=") + std::to_string(unsigned(type)));
     skipMessages = true;
 
+    if (!poll) {
+        poll = true;
+        asyncPoll();
+    }
+
     while (true) {
         lastMessage = {};
 
-        if (poll) {
-            DEBUG_MSG("Running ASIO event loop iteration...");
-            assert(activeSession);
-            // ^ We assert here instead of beginning of method
-            // because waitForEvent used before assigning
-            // activeSession = true in connect.
+        DEBUG_MSG("Running ASIO event loop iteration...");
 
-            ioService.run_one();
-        } else {
-            DEBUG_MSG("Reading using blocking I/O...");
-            lastMessage = parseGatewayMessage(gatewayConnection->readMessage());
-        }
+        ioService.run_one();
 
         DEBUG_MSG(lastMessage.dump());
 
