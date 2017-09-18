@@ -110,7 +110,7 @@ namespace Hexicord {
         nlohmann::json jsonResp = nlohmann::json::parse(response.body);
 
 #ifdef HEXICORD_RATELIMIT_PREDICTION
-        updateRatelimitsIfPresent(endpoint, response.headers);
+        updateRatelimitsIfPresent(endpoint, { response.headers.begin(), response.headers.end() });
 #endif
 
         if (response.statusCode / 100 != 2) {
@@ -752,7 +752,9 @@ namespace Hexicord {
     }
 
 #ifdef HEXICORD_RATELIMIT_PREDICTION 
-    void RestClient::updateRatelimitsIfPresent(const std::string& endpoint, const REST::HeadersMap& headers) {
+    void RestClient::updateRatelimitsIfPresent(const std::string& endpoint,
+                                               const std::unordered_map<std::string, std::string>& headers) {
+
         auto remainingIt = headers.find("X-RateLimit-Remaining");
         auto limitIt     = headers.find("X-RateLimit-Limit");
         auto resetIt     = headers.find("X-RateLimit-Reset");

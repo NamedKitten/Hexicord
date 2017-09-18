@@ -983,7 +983,7 @@ private:
         void throwRestError(const REST::HTTPResponse& response, const nlohmann::json& payload);
 
 #ifdef HEXICORD_RATELIMIT_PREDICTION
-        void updateRatelimitsIfPresent(const std::string& endpoint, const REST::HeadersMap& headers);
+        void updateRatelimitsIfPresent(const std::string& endpoint, const std::unordered_map<std::string, std::string>& headers);
 #endif
 
         static inline REST::MultipartEntity fileToMultipartEntity(const File& file);
