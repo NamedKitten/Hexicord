@@ -235,6 +235,9 @@ private:
         void processMessage(const nlohmann::json& message);
         void sendMessage(OpCode opCode, const nlohmann::json& payload = {}, const std::string& t = "");
 
+        // Set if sendMessage entered.
+        bool activeSendMessage = false;
+
         // Calls sendHeartbeat every heartbeatIntervalMs milliseconds using
         // heartbeatTimer while heartbeat = true.
         void asyncHeartbeat();

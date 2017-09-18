@@ -192,7 +192,7 @@ void GatewayClient::resume(const std::string& gatewayUrl,
 void GatewayClient::disconnect(int code) noexcept {
     DEBUG_MSG(std::string("Disconnecting from gateway... code=") + std::to_string(code));
     try {
-        if (code != NoCloseEvent) sendMessage(OpCode::EventDispatch, nlohmann::json(code), "CLOSE");
+        if (code != NoCloseEvent && !activeSendMessage) sendMessage(OpCode::EventDispatch, nlohmann::json(code), "CLOSE");
     } catch (...) { // whatever happened - we don't care.
     }
 
@@ -380,7 +380,10 @@ void GatewayClient::sendMessage(GatewayClient::OpCode opCode, const nlohmann::js
     }
 
     std::string messageString = message.dump();
+
+    activeSendMessage = true;
     gatewayConnection->sendMessage(std::vector<uint8_t>(messageString.begin(), messageString.end()));
+    activeSendMessage = false;
 }
 
 void GatewayClient::asyncHeartbeat() {
