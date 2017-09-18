@@ -53,7 +53,7 @@ HTTPSConnection::HTTPSConnection(boost::asio::io_service& ioService, const std::
 void HTTPSConnection::open() {
     tcp::resolver resolver(connection->stream.get_io_service());
 
-    boost::asio::connect(connection->stream.next_layer(), resolver.resolve({ serverName, "https" }));
+    boost::asio::connect(connection->stream.next_layer(), resolver.resolve({ serverName, "443", tcp::resolver::query::numeric_service }));
     connection->stream.next_layer().set_option(tcp::no_delay(true));
     connection->stream.handshake(ssl::stream_base::client);
     alive = true;
