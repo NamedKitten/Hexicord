@@ -115,8 +115,6 @@ namespace Hexicord {
     }
 
     void TLSWebSocket::shutdown() {
-        std::lock_guard<std::mutex> lock(connectionMutex);
-
         boost::system::error_code ec;
         connection->wsStream.close(websocket::close_code::normal, ec);
         if (ec &&
