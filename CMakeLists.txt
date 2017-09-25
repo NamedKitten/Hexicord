@@ -247,24 +247,31 @@ endif()
 # Documentation (Doxygen)
 
 find_package(Doxygen)
-option(HEXICORD_DOCS    "Generate HTML documentation (Doxygen)"    ${DOXYGEN_FOUND})
+
+option(HEXICORD_DOCS "Generate HTML documentation (Doxygen)"     ${DOXYGEN_FOUND})
+
 if(HEXICORD_DOCS)
     if (NOT DOXYGEN_FOUND)
         message(FATAL_ERROR "Doxygen is required to build documentation.")
         # Don't have to put everything else in else branch because FATAL_ERROR aborts configuration.
     endif()
 
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    if(DOXYGEN_DOT_FOUND)
+        file(TO_NATIVE_PATH "${DOXYGEN_DOT_EXECUTABLE}" DOXYGEN_DOT_EXECUTABLE_)
+        set(DOXYGEN_DOT_FOUND_ "YES")
+    endif()
 
-    add_custom_command(OUTPUT ${HEXICORD_BINARY_DIR}/doc
+    configure_file(${HEXICORD_SOURCE_DIR}/Doxyfile.in ${HEXICORD_BINARY_DIR}/Doxyfile @ONLY)
+
+    add_custom_command(OUTPUT ${HEXICORD_BINARY_DIR}/docs
                        COMMAND ${DOXYGEN_EXECUTABLE} ${HEXICORD_BINARY_DIR}/Doxyfile
                        WORKING_DIRECTORY ${HEXICORD_BINARY_DIR}
-                       COMMENT "Generating HTML API documentation using Doxygen"
-                       VERBATIM
-                       )
+                       COMMENT "Generating HTML documentation using Doxygen"
+                       DEPENDS ${HEXICORD_HEADERS} ${HEXICORD_SOURCE_DIR}/Doxyfile.in ${HEXICORD_SOURCE_DIR}/README.md
+                       VERBATIM)
+
     add_custom_target(doc ALL
-                      DEPENDS ${HEXICORD_SOURCES} ${HEXICORD_SOURCE_DIR}/Doxyfile.in
-                      )
+                      DEPENDS ${HEXICORD_BINARY_DIR}/docs)
 
     install(DIRECTORY ${HEXICORD_BINARY_DIR}/docs/ DESTINATION share/doc/hexicord)
 endif()
