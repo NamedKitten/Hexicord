@@ -113,12 +113,14 @@ find_package(Threads REQUIRED)
 
 include(cmake/external-targets.cmake)
 
-if(CMAKE_VERSION VERSION_LESS 3.5)
+if(NOT TARGET Bosot::system)
     define_boost_target(system)
 endif()
 
-if(CMAKE_VERSION VERSION_LESS 3.4)
+if(NOT TARGET OpenSSL::SSL)
     define_openssl_ssl_target()
+endif()
+if(NOT TARGET OpenSSL::Crypto)
     define_openssl_crypto_target()
 endif()
 
