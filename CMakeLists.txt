@@ -209,14 +209,17 @@ target_include_directories(hexicord PUBLIC
                            ${PROJECT_BINARY_DIR})
 target_compile_options(hexicord PRIVATE ${WARNING_FLAGS})
 
+include(GNUInstallDirs)
+
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/hexicord
-        DESTINATION include
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
         FILES_MATCHING
          PATTERN "*.hpp"
          PATTERN "internal" EXCLUDE)
+install(FILES ${CMAKE_BINARY_DIR}/hexicord/config.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hexicord)
 install(TARGETS hexicord
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib)
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 #------------------------------------------------------------------------------
 # Examples
