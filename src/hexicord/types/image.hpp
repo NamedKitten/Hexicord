@@ -76,7 +76,7 @@ namespace Hexicord {
         }
 
         template<ImageType>
-        inline std::string basePath() {}
+        inline std::string basePath() { return std::string(); }
 
         template<> inline std::string basePath<CustomEmoji>()       { return "/emojis";         }
         template<> inline std::string basePath<GuildIcon>()         { return "/icons";          }
@@ -86,7 +86,7 @@ namespace Hexicord {
         template<> inline std::string basePath<ApplicationIcon>()   { return "/app-icons";      }
 
         template<ImageFormat>
-        inline std::string formatExtension() {}
+        inline std::string formatExtension() { return std::string(); }
 
         template<> inline std::string formatExtension<Jpeg>() { return "jpg";  }
         template<> inline std::string formatExtension<Png>()  { return "png";  }
