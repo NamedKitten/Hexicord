@@ -171,7 +171,7 @@ hexicord_config(BOOL HEXICORD_RATELIMIT_HIT_AS_ERROR "Throw exception on ratelim
 
 hexicord_config(STRING HEXICORD_RATELIMIT_CACHE_SIZE   "Limit count of entries with information about ratelimits per route" "512")
 
-hexicord_config(BOOL HEXICORD_ZLIB "Use optional zlib compression" OFF)
+hexicord_config(BOOL HEXICORD_ZLIB "Use optional zlib compression" ON)
 
 configure_file(${HEXICORD_SOURCE_DIR}/src/hexicord/config.hpp.in
                ${HEXICORD_BINARY_DIR}/hexicord/config.hpp @ONLY)
