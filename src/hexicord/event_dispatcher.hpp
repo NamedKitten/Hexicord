@@ -31,6 +31,7 @@
 
 namespace Hexicord {
     enum class Event {
+        Unknown,
         Ready,
         Resumed,
         ChannelCreate,
@@ -83,6 +84,7 @@ namespace Hexicord {
         static const std::unordered_map<std::string, Event> stringToEnum;
 
         std::unordered_map<Event, std::vector<EventHandler>, EventHash> handlers {
+            { Event::Unknown, {} },
             { Event::Ready, {} },
             { Event::Resumed, {} },
             { Event::ChannelCreate, {} },

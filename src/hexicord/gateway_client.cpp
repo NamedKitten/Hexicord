@@ -329,7 +329,8 @@ Event GatewayClient::eventEnumFromString(const std::string& str) {
     };
 
     auto it = stringToEnum.find(str);
-    assert(it != stringToEnum.end());
+    if (it == stringToEnum.end())
+        return Event::Unknown;
 
     return it->second;
 }
