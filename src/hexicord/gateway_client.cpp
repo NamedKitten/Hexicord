@@ -124,11 +124,7 @@ void GatewayClient::connect(const std::string& gatewayUrl, int shardId, int shar
 
     DEBUG_MSG("Waiting for Ready event...");
     nlohmann::json readyPayload;
-    try {
-        readyPayload = waitForEvent(Event::Ready);
-    } catch (...) {
-        activeSession = false;
-    }
+    readyPayload = waitForEvent(Event::Ready);
 
     DEBUG_MSG("Got Ready event. Starting heartbeat and polling...");
 
