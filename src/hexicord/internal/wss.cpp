@@ -54,6 +54,8 @@ namespace Hexicord {
 
     TLSWebSocket::~TLSWebSocket() {
         try {
+            // BUG: This doesn't seem to properly check for connection close-ability,
+            // specifically it seems to fail impl/close.ipp:209 rd_close assert (e.g. connection already closed)
             if (connection->wsStream.lowest_layer().is_open()) this->shutdown();
         } catch (...) {
             // it's a destructor, we should not allow any exceptions.
