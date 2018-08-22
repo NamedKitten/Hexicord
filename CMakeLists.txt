@@ -55,7 +55,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Allow some tweaks in build process without changing CMakeLists.
-option(HEXICORD_WERROR  "Build with -Werror flag."                 ON)
+option(HEXICORD_WERROR  "Build with -Werror flag."                 OFF)
 option(HEXICORD_WSTRICT "Build with really strict warning flags."  ON)
 
 # Check if used compiler supports warning flags we use.
