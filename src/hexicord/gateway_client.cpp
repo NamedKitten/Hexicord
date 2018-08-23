@@ -160,8 +160,9 @@ void GatewayClient::resume(const std::string& gatewayUrl,
     if (!gatewayConnection) gatewayConnection.reset(new TLSWebSocket(ioService));
     if (!gatewayConnection->isSocketOpen()) gatewayConnection->handshake(Utils::domainFromUrl(gatewayUrl), gatewayPathSuffix, 443);
 
-    DEBUG_MSG("Performing WebSocket handshake...");
-    gatewayConnection->handshake(Utils::domainFromUrl(gatewayUrl), gatewayPathSuffix, 443);
+    // FIXME: erroneous double handshake? seems to fail with "unexpected record"
+//    DEBUG_MSG("Performing WebSocket handshake...");
+//    gatewayConnection->handshake(Utils::domainFromUrl(gatewayUrl), gatewayPathSuffix, 443);
 
     DEBUG_MSG("Reading Hello message.");
     const nlohmann::json gatewayHello = parseGatewayMessage(gatewayConnection->readMessage());
