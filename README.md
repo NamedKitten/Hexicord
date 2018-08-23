@@ -1,9 +1,9 @@
 Hexicord
 =========
-[![Latest Release](https://img.shields.io/github/release/foxcpp/Hexicord.svg?style=flat-square)](https://github.com/foxcpp/Hexicord/releases/latest) 
-[![Discord server](https://img.shields.io/discord/342774887091535873.svg?style=flat-square)](https://discord.gg/4Y6Xaf4) 
-[![Issues](https://img.shields.io/github/issues-raw/foxcpp/Hexicord.svg?style=flat-square)](https://github.com/foxcpp/Hexicord/issues) 
-[![License](https://img.shields.io/github/license/foxcpp/Hexicord.svg?style=flat-square)](https://github.com/foxcpp/Hexicord/blob/master/LICENSE)
+*NOTE*: This is a lazy maintenance fork of foxcpp/Hexicord, which seems to be no longer avaliable
+
+[![Build Status](https://travis-ci.org/Chemrat/Hexicord.svg?branch=master)](https://travis-ci.org/Chemrat/Hexicord)
+[![License](https://img.shields.io/github/license/Chemrat/Hexicord.svg?style=flat-square)](https://github.com/Chemrat/Hexicord/blob/master/LICENSE)
 
 [Discord API](https://discordapp.com/developers/docs/intro) implementation using C++11 with boost libraries.
 

@@ -36,6 +36,7 @@
 .idea/
 ## CMake and Make things
 CMakeCache.txt
+CMakeLists.txt.*
 CMakeFiles
 CMakeScripts
 Testing
@@ -46,6 +47,7 @@ install_manifest.txt
 ## Used by Vim
 compile_commands.json
 ## Built stuff
-/*build*
+build
 ## Something else
 /doc/
+.directory
