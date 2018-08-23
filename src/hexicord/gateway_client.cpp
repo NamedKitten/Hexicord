@@ -182,6 +182,7 @@ void GatewayClient::resume(const std::string& gatewayUrl,
 
     DEBUG_MSG("Waiting for Resumed event...");
 
+    activeSession = true;
     // GatewayError can be thrown here, why?
     //  waitForEvent calls processMessage for other messages (including OP Invalid Session),
     //  processMessage throws GatewayError if receives Invalid Session.
@@ -192,12 +193,6 @@ void GatewayClient::resume(const std::string& gatewayUrl,
     lastGatewayUrl_     = gatewayUrl;
     sessionId_          = sessionId;
     lastSequenceNumber_ = lastSequenceNumber;
-
-    activeSession = true;
-
-    // Started by waitForEvent if not running.
-    // poll = true;
-    // asyncPoll();
 }
 
 void GatewayClient::disconnect(int code) noexcept {
