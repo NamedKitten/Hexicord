@@ -118,6 +118,8 @@ namespace Hexicord {
          */
         void shutdown();
 
+        void closeWebsocket();
+
         bool isSocketOpen() const;
 
         std::shared_ptr<WSSTLSConnection> connection;

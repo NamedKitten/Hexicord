@@ -118,6 +118,17 @@ namespace Hexicord {
 
     void TLSWebSocket::shutdown() {
         boost::system::error_code ec;
+
+        connection->wsStream.next_layer().shutdown(/* ignored */ ec);
+        connection->wsStream.next_layer().next_layer().close();
+    }
+
+    void TLSWebSocket::closeWebsocket()
+    {
+        // FIXME: These should be a way to check properly if the websocket close frame has been sent/read already
+        // Apparently closing after getting a short_read error counts as closing twice and is a big no-no (assert)
+
+        boost::system::error_code ec;
         connection->wsStream.close(websocket::close_code::normal, ec);
         if (ec &&
             ec != boost::asio::ssl::error::stream_truncated &&
@@ -127,9 +138,6 @@ namespace Hexicord {
 
             throw boost::system::system_error(ec);
         }
-
-        connection->wsStream.next_layer().shutdown(/* ignored */ ec);
-        connection->wsStream.next_layer().next_layer().close();
     }
 
     bool TLSWebSocket::isSocketOpen() const {
